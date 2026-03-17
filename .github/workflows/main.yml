@@ -14,4 +14,4 @@ jobs:
         run: |
           pip install selenium beautifulsoup4 webdriver-manager
       - name: Correr Scraper Pro
-        run: python scraper_senado_pro.py
+        run: python scraper_senado.py
