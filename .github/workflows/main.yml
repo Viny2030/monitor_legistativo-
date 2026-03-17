@@ -1,0 +1,16 @@
+name: Test de Conexion
+on: [workflow_dispatch] # Esto permite darle al botón "Play" manual
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - name: Install dependencies
+        run: pip install requests
+      - name: Run test
+        run: python test_conexion.py
