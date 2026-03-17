@@ -1,6 +1,10 @@
 name: Monitor Legislativo - Diputados
 on: [workflow_dispatch]
 
+# AGREGÁ ESTO PARA DARLE PERMISO DE ESCRITURA AL BOT
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -24,7 +28,7 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add .
+          git add nomina_diputados.csv
           if git diff --quiet && git diff --staged --quiet; then
             echo "No hay cambios para subir"
           else
