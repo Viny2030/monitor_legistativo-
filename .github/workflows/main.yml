@@ -13,4 +13,4 @@ jobs:
       - name: Install dependencies
         run: pip install requests beautifulsoup4
       - name: Run Test
-        run: python test_congreso.py
+        run: python obtener_datos.py
