@@ -1,4 +1,4 @@
-name: Test Congreso Completo
+name: Scraper Senado Pro
 on: [workflow_dispatch]
 
 jobs:
@@ -10,7 +10,8 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Install dependencies
-        run: pip install requests beautifulsoup4
-      - name: Run Test
-        run: python obtener_datos.py
+      - name: Instalar Chrome y Selenium
+        run: |
+          pip install selenium beautifulsoup4 webdriver-manager
+      - name: Correr Scraper Pro
+        run: python scraper_senado_pro.py
