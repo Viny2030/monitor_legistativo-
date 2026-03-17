@@ -1,17 +1,16 @@
-name: Test de Conexion
+name: Test Congreso Completo
 on: [workflow_dispatch]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout del código
-        uses: actions/checkout@v4 # Actualizado de v3 a v4
-      - name: Configurar Python
-        uses: actions/setup-python@v5 # Actualizado de v4 a v5
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Instalar dependencias
-        run: pip install requests
-      - name: Run test
-        run: python test_conexion.py
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4
+      - name: Run Test
+        run: python test_congreso.py
