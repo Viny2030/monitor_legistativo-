@@ -1,4 +1,4 @@
-name: Scraper Senado Pro
+name: Monitor Legislativo - Diputados
 on: [workflow_dispatch]
 
 jobs:
@@ -15,16 +15,19 @@ jobs:
           
       - name: Instalar Dependencias
         run: |
-          pip install selenium beautifulsoup4 webdriver-manager pandas
+          pip install requests beautifulsoup4 pandas
           
-      - name: Correr Scraper Senado
-        run: python scraper_senado.py
+      - name: Correr Scraper Diputados
+        run: python obtener_datos.py
         
-      - name: Verificar si se generó el CSV
+      - name: Verificar y Guardar Cambios
         run: |
-          if [ -f "nomina_senadores.csv" ]; then
-            echo "✅ El archivo CSV fue creado exitosamente."
-            ls -l nomina_senadores.csv
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          if git diff --quiet && git diff --staged --quiet; then
+            echo "No hay cambios para subir"
           else
-            echo "❌ El archivo CSV no se generó."
+            git commit -m "Actualización automática de nómina"
+            git push
           fi
