@@ -1,36 +1,46 @@
+import time
+import pandas as pd
+from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from bs4 import BeautifulSoup
-import time
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service
 
 def scraping_senado_real():
     chrome_options = Options()
-    chrome_options.add_argument("--headless") # No abre ventana (necesario en GitHub)
+    chrome_options.add_argument("--headless")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
     
-    driver = webdriver.Chrome(options=chrome_options)
+    # Configuramos el driver para que funcione en el servidor de GitHub
+    service = Service(ChromeDriverManager().install())
+    driver = webdriver.Chrome(service=service, options=chrome_options)
+    
     url = "https://www.senado.gob.ar/senadores/listados/listaSenadoResumida"
     
     print(f"--- 🕵️ Navegando al Senado con Chrome ---")
     try:
         driver.get(url)
-        time.sleep(5) # Esperamos que el firewall nos deje pasar
+        time.sleep(7) # Un poco más de tiempo para asegurar la carga
         
         soup = BeautifulSoup(driver.page_source, 'html.parser')
         filas = soup.find_all('tr')
         
         nombres = []
-        for fila in filas[1:10]:
+        for fila in filas[1:]: # Procesamos todos
             cols = fila.find_all('td')
             if len(cols) > 1:
                 nombres.append(cols[1].get_text(strip=True))
         
         if nombres:
-            print("✅ ¡LOGRADO! Senadores encontrados:")
-            for n in nombres: print(f"  👤 {n}")
+            print(f"✅ ¡LOGRADO! Se encontraron {len(nombres)} senadores.")
+            for n in nombres[:5]: print(f"  👤 {n}")
+            
+            # Guardamos el resultado en un CSV para el futuro
+            df = pd.DataFrame(nombres, columns=["Nombre"])
+            df.to_csv("nomina_senadores.csv", index=False)
         else:
-            print("⚠️ El sitio cargó pero no detectamos la tabla. Puede ser un cambio de diseño.")
+            print("⚠️ El sitio cargó pero no detectamos la tabla.")
             
     except Exception as e:
         print(f"❌ Falló Selenium: {e}")
