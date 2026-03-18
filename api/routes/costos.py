@@ -21,7 +21,7 @@ import os, hashlib
 
 router = APIRouter()
 
-CSV_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "nomina_diputados.csv")
+CSV_PATH = os.path.join(os.path.dirname(__file__), "../..", "..", "nomina_diputados.csv")
 
 # Módulo actual — actualizar vía monitorear_modulo() en personal.py
 VALOR_MODULO = 215_000  # ARS — actualizar cuando se detecte nuevo valor
