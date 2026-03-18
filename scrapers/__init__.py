@@ -6,6 +6,7 @@ from .fuentes import (
     generar_tabla_remuneraciones,
     diagnosticar_fuentes,
 )
+from .votaciones import descargar_votaciones, calcular_indicadores_votacion
 
 __all__ = [
     "obtener_nomina",
@@ -14,4 +15,6 @@ __all__ = [
     "descargar_nomina_personal",
     "generar_tabla_remuneraciones",
     "diagnosticar_fuentes",
+    "descargar_votaciones",
+    "calcular_indicadores_votacion",
 ]
