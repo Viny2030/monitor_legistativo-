@@ -1,0 +1,17 @@
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.env
+
+# Datos grandes (no versionar CSVs pesados, solo los pequeños de referencia)
+data/*.csv
+!data/.gitkeep
+
+# PyCharm
+.idea/
+*.iml
+
+# macOS
+.DS_Store
