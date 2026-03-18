@@ -40,7 +40,7 @@ def construir_centro_costos(
 
     df_cc = df_nomina[[col_nombre, col_distrito, col_bloque]].copy()
     df_cc.columns = ["Nombre", "Distrito", "Bloque"]
-    df_cc["Nombre_norm"] = df_cc["Nombre"].str.upper().str.strip()
+    df_cc["Nombre_norm"] = df_cc["Nombre"].apply(_normalizar_nombre)
 
     # ── Columna: Dieta + Movilidad ────────────────────────────────────────────
     if df_remuneraciones is not None and not df_remuneraciones.empty:
@@ -66,13 +66,16 @@ def construir_centro_costos(
         if col_diputado_sub and col_monto_sub:
             df_sub_agg = (
                 df_subsidios
-                .assign(Nombre_norm=df_subsidios[col_diputado_sub].str.upper().str.strip())
+                .assign(Nombre_norm=df_subsidios[col_diputado_sub].apply(_normalizar_nombre))
                 .groupby("Nombre_norm")[col_monto_sub]
                 .sum()
                 .reset_index()
                 .rename(columns={col_monto_sub: "Subsidios_otorgados_total"})
             )
             df_cc = df_cc.merge(df_sub_agg, on="Nombre_norm", how="left")
+            # Mostrar cuántos matchearon
+            matcheados = df_cc["Subsidios_otorgados_total"].notna().sum()
+            print(f"  💰 Subsidios cruzados: {matcheados} diputados con datos")
         else:
             df_cc["Subsidios_otorgados_total"] = None
     else:
@@ -111,6 +114,27 @@ def _detectar_col(df: pd.DataFrame, candidatas: list) -> str:
         if c in df.columns:
             return c
     return None
+
+
+def _normalizar_nombre(nombre: str) -> str:
+    """
+    Normaliza nombres para cruce entre fuentes con distintos formatos.
+    Convierte a mayúsculas, elimina tildes, signos y espacios extra.
+    Ejemplo:
+      'Agüero, Guillermo César' → 'AGUERO GUILLERMO CESAR'
+      'AGUERO, GUILLERMO CESAR' → 'AGUERO GUILLERMO CESAR'
+    """
+    import unicodedata
+    if not isinstance(nombre, str):
+        return ""
+    # Quitar tildes
+    nombre = unicodedata.normalize("NFKD", nombre)
+    nombre = "".join(c for c in nombre if not unicodedata.combining(c))
+    # Mayúsculas, quitar comas y puntos, colapsar espacios
+    nombre = nombre.upper()
+    nombre = nombre.replace(",", " ").replace(".", " ")
+    nombre = " ".join(nombre.split())
+    return nombre
 
 
 def resumen_centro_costos(df_cc: pd.DataFrame) -> None:

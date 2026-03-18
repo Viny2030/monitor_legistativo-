@@ -254,15 +254,18 @@ def generar_tabla_remuneraciones(df_nomina: pd.DataFrame) -> pd.DataFrame:
 # 3. NÓMINA DE PERSONAL (ASESORES)
 #    datos.hcdn.gob.ar — dataset de empleados por categoría y área
 # ─────────────────────────────────────────────────────────────────────────────
-# URLs candidatas — probar en orden hasta encontrar una con HTTP 200
-# Para actualizar: ir a https://datos.hcdn.gob.ar → buscar nómina personal
-# → abrir dataset → copiar URL directa del recurso CSV
+# URLs confirmadas desde datos.hcdn.gob.ar (verificadas 18/03/2026)
 URLS_NOMINA_PERSONAL_CANDIDATAS = [
-    "https://datos.hcdn.gob.ar/dataset/nomina-de-personal/resource/nomina-personal.csv",
-    "https://datos.hcdn.gob.ar/dataset/planta-de-personal/resource/planta-personal.csv",
-    "https://www4.hcdn.gob.ar/muestra/csv/nomina_personal.csv",
+    # Nómina de personal (legajo, nombre, tipo de planta, categoría, área)
+    "https://datos.hcdn.gob.ar/dataset/af7136d5-84eb-49b2-af2e-aaf6319e4aae/resource/6e49506e-6757-44cd-94e9-0e75f3bd8c38/download/nomina3.6.csv",
 ]
 URL_NOMINA_PERSONAL_CSV = URLS_NOMINA_PERSONAL_CANDIDATAS[0]
+
+# Escala salarial (categoría → sueldo)
+URL_ESCALA_SALARIAL = (
+    "https://datos.hcdn.gob.ar/dataset/e471dfa2-92ab-4c6d-9bd1-b46d97c6ea1b"
+    "/resource/673f193d-1cfb-46e0-b6c8-e931aa0a5314/download/escala-salarial1.5.csv"
+)
 
 
 def descargar_nomina_personal(guardar: bool = True) -> pd.DataFrame:
@@ -374,6 +377,44 @@ def diagnosticar_fuentes() -> None:
     print("="*60)
 
 
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 5. ESCALA SALARIAL
+#    Permite cruzar categoría del empleado → sueldo → asignar al despacho
+# ─────────────────────────────────────────────────────────────────────────────
+def descargar_escala_salarial(guardar: bool = True) -> pd.DataFrame:
+    """
+    Descarga la escala salarial de HCDN.
+    Columnas esperadas: CATEGORIA | SUELDO (o similar)
+    Permite calcular el costo real de cada asesor por categoría escalafón.
+    """
+    print(f"\n📥 Escala salarial: {URL_ESCALA_SALARIAL}")
+    try:
+        r = requests.get(URL_ESCALA_SALARIAL, headers=HEADERS, timeout=20)
+        r.raise_for_status()
+
+        for enc in ["utf-8", "latin-1"]:
+            try:
+                df = pd.read_csv(io.StringIO(r.content.decode(enc)), skipinitialspace=True)
+                break
+            except UnicodeDecodeError:
+                continue
+
+        df.columns = [c.strip().upper() for c in df.columns]
+        print(f"  ✅ {len(df)} categorías | Columnas: {list(df.columns)}")
+
+        if guardar:
+            ruta = os.path.join(DATA_DIR, "escala_salarial.csv")
+            df.to_csv(ruta, index=False, encoding="utf-8-sig")
+            print(f"  💾 Guardado: {ruta}")
+
+        return df
+
+    except Exception as e:
+        print(f"  ❌ Error: {e}")
+        return pd.DataFrame()
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     diagnosticar_fuentes()
@@ -381,3 +422,5 @@ if __name__ == "__main__":
     descargar_subsidios(2024)
     print("\n--- Probando nómina de personal ---")
     descargar_nomina_personal()
+    print("\n--- Probando escala salarial ---")
+    descargar_escala_salarial()
