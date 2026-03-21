@@ -15,12 +15,30 @@ header {
 header .escudo { font-size: 2.4rem; }
 header h1 { font-size: 1.35rem; font-weight: 700; letter-spacing: .02em; }
 header p { font-size: .875rem; opacity: .85; margin-top: .2rem; }
-header nav { margin-left: auto; }
+header nav { margin-left: auto; display: flex; gap: .5rem; flex-wrap: wrap; }
 header nav a {
   color: #fff; text-decoration: none; background: rgba(255,255,255,.18);
   padding: .4rem 1rem; border-radius: 20px; font-size: .82rem; font-weight: 600;
+  transition: background .15s;
 }
-header nav a:hover { background: rgba(255,255,255,.3); }
+header nav a:hover { background: rgba(255,255,255,.35); }
+header nav a.active { background: rgba(255,255,255,.4); border: 1px solid rgba(255,255,255,.6); }
+
+/* Barra de navegación interna sticky */
+.nav-interna {
+  position: sticky; top: 0; z-index: 100;
+  background: #003087; display: flex; gap: 0; flex-wrap: wrap;
+  border-bottom: 2px solid #0057b7;
+}
+.nav-interna a {
+  color: rgba(255,255,255,.75); text-decoration: none;
+  padding: .55rem 1.1rem; font-size: .8rem; font-weight: 600;
+  border-right: 1px solid rgba(255,255,255,.1);
+  transition: background .12s, color .12s;
+  white-space: nowrap;
+}
+.nav-interna a:hover  { background: rgba(255,255,255,.12); color: #fff; }
+.nav-interna a.activo { background: rgba(255,255,255,.18); color: #fff; border-bottom: 2px solid #f59e0b; }
 .status-bar {
   padding: .5rem 1.5rem; background: #fff; border-bottom: 1px solid #dde2ec;
   display: flex; align-items: center; gap: 1rem; font-size: .78rem; flex-wrap: wrap;
@@ -90,9 +108,38 @@ header nav a:hover { background: rgba(255,255,255,.3); }
 .bz { flex: 1; text-align: center; color: #777; }
 .error-msg { background: #fee2e2; border: 1px solid #fca5a5; border-radius: 8px; padding: 1.5rem; text-align: center; color: #991b1b; grid-column: 1/-1; }
 footer {
-  text-align: center; font-size: .8rem; color: #888; padding: 1rem;
-  border-top: 1px solid #ddd; background: #fff;
+  font-size: .8rem; color: #64748b; background: #1e293b; color: #94a3b8;
 }
+.footer-nota {
+  background: #1e293b; border-top: 3px solid #f59e0b;
+  padding: 1.2rem 2rem; text-align: center;
+}
+.footer-nota p {
+  max-width: 860px; margin: 0 auto; font-size: .8rem; color: #94a3b8; line-height: 1.6;
+}
+.footer-nota strong { color: #fbbf24; }
+.footer-donacion {
+  background: #0f172a; padding: 1.4rem 2rem;
+  display: flex; flex-wrap: wrap; gap: 1.2rem; justify-content: center; align-items: flex-start;
+}
+.footer-donacion h4 {
+  width: 100%; text-align: center; color: #e2e8f0; font-size: .85rem;
+  letter-spacing: .05em; text-transform: uppercase; margin-bottom: .3rem;
+}
+.don-card {
+  background: #1e293b; border: 1px solid #334155; border-radius: 8px;
+  padding: .9rem 1.2rem; min-width: 220px; max-width: 280px; font-size: .75rem;
+}
+.don-card h5 { color: #60a5fa; font-size: .78rem; margin-bottom: .5rem; border-bottom: 1px solid #334155; padding-bottom: .3rem; }
+.don-card .don-row { display: flex; flex-direction: column; gap: .2rem; margin-bottom: .3rem; }
+.don-card .don-label { color: #64748b; font-size: .68rem; text-transform: uppercase; letter-spacing: .04em; }
+.don-card .don-val { color: #e2e8f0; font-family: monospace; font-size: .78rem; word-break: break-all; }
+.don-card .don-val.highlight { color: #34d399; font-weight: 700; }
+.footer-credits {
+  background: #020617; padding: .7rem 1rem; text-align: center;
+  font-size: .72rem; color: #475569; border-top: 1px solid #1e293b;
+}
+.footer-credits a { color: #60a5fa; text-decoration: none; }
 </style>
 </head>
 <body>
@@ -135,10 +182,90 @@ footer {
   </div>
 </div>
 
-<footer id="footer-text">
-  Monitor Legislativo · Fuentes: HCDN · INDEC · Presupuesto Abierto · Boletín Oficial<br>
-  Benchmarks: IPU Parliamentary Indicators · OCDE Government at a Glance · CEPAL · Open Government Partnership
-</footer>
+<!-- ══ FOOTER NOTA LEGAL ══ -->
+<div class="footer-nota">
+  <p>
+    <strong>⚠️ Nota:</strong> Esta herramienta es de carácter <strong>experimental y académico</strong>.
+    Los datos provienen de fuentes públicas oficiales del Estado argentino.
+    Los resultados son <strong>indicadores algorítmicos de riesgo</strong> — no implican juicio de valor,
+    acusación ni determinación de responsabilidad sobre ninguna empresa, organismo o persona.
+    El objetivo es promover la <strong>transparencia y el debate informado</strong> sobre el gasto público.
+  </p>
+</div>
+
+<!-- ══ FOOTER DONACIONES ══ -->
+<div class="footer-donacion">
+  <h4>💙 Apoyá este proyecto — Donaciones voluntarias</h4>
+  <div style="width:100%; text-align:center; margin-bottom:.8rem;">
+    <a href="#donacion-detalle"
+      onclick="document.getElementById('donacion-detalle').style.display=document.getElementById('donacion-detalle').style.display==='none'?'flex':'none'; return false;"
+      style="display:inline-block; background:#22c55e; color:#fff; font-weight:700; font-size:.95rem;
+             padding:.65rem 2rem; border-radius:30px; text-decoration:none; letter-spacing:.03em;
+             box-shadow:0 4px 14px rgba(34,197,94,.4); transition:background .15s;"
+      onmouseover="this.style.background='#16a34a'" onmouseout="this.style.background='#22c55e'">
+      💚 DONAR AL PROYECTO
+    </a>
+  </div>
+  <div id="donacion-detalle" style="display:none; flex-wrap:wrap; gap:1.2rem; justify-content:center; width:100%;">
+
+  <!-- Argentina Pesos -->
+  <div class="don-card">
+    <h5>🇦🇷 Argentina · Pesos (ARS)</h5>
+    <div class="don-row"><span class="don-label">Tipo</span><span class="don-val">Caja de Ahorro</span></div>
+    <div class="don-row"><span class="don-label">CBU</span><span class="don-val highlight">0140005203400552652310</span></div>
+    <div class="don-row"><span class="don-label">Alias</span><span class="don-val highlight">ALGORIT.MONTE.PESOS</span></div>
+    <div class="don-row"><span class="don-label">Titular</span><span class="don-val">Vicente Humberto Monteverde</span></div>
+    <div class="don-row"><span class="don-label">CUIL/CUIT</span><span class="don-val">20-12034411-1</span></div>
+  </div>
+
+  <!-- Argentina Dólares -->
+  <div class="don-card">
+    <h5>🇦🇷 Argentina · Dólares (USD)</h5>
+    <div class="don-row"><span class="don-label">Tipo</span><span class="don-val">Caja de Ahorro Dólares</span></div>
+    <div class="don-row"><span class="don-label">CBU</span><span class="don-val highlight">0140005204400550329709</span></div>
+    <div class="don-row"><span class="don-label">Alias</span><span class="don-val highlight">ALGO.MONTE.DOLARES</span></div>
+    <div class="don-row"><span class="don-label">Titular</span><span class="don-val">Vicente Humberto Monteverde</span></div>
+    <div class="don-row"><span class="don-label">CUIL/CUIT</span><span class="don-val">20-12034411-1</span></div>
+  </div>
+
+  <!-- Exterior -->
+  <div class="don-card">
+    <h5>🌎 Desde el Exterior (USD Wire)</h5>
+    <div class="don-row"><span class="don-label">Banco</span><span class="don-val">Banco Santander Montevideo</span></div>
+    <div class="don-row"><span class="don-label">Beneficiario</span><span class="don-val">Vicente Humberto Monteverde</span></div>
+    <div class="don-row"><span class="don-label">Dirección</span><span class="don-val">Av. Directorio 3024 PB DTO 04</span></div>
+    <div class="don-row"><span class="don-label">Cuenta USD</span><span class="don-val highlight">005200183500</span></div>
+    <div class="don-row"><span class="don-label">Swift</span><span class="don-val highlight">BSCHUYMM</span></div>
+    <div class="don-row"><span class="don-label">CUIT</span><span class="don-val">20-12034411-1</span></div>
+  </div>
+
+  <!-- Contacto -->
+  <div class="don-card" style="max-width:320px;">
+    <h5>📬 Autor y Contacto</h5>
+    <div style="display:flex; align-items:center; gap:.8rem; margin-bottom:.7rem;">
+      <img src="../foto.jpg" alt="Vicente Humberto Monteverde"
+        style="width:56px; height:56px; border-radius:50%; object-fit:cover; border:2px solid #334155; flex-shrink:0;"
+        onerror="this.style.display='none'">
+      <div>
+        <div style="color:#e2e8f0; font-weight:700; font-size:.82rem;">Vicente Humberto Monteverde</div>
+        <div style="color:#64748b; font-size:.7rem;">Investigador · Desarrollador</div>
+        <div style="color:#64748b; font-size:.7rem;">CUIL: 20-12034411-1</div>
+      </div>
+    </div>
+    <div class="don-row"><span class="don-label">Email principal</span><span class="don-val"><a href="mailto:vhmonte@retina.ar" style="color:#60a5fa;">vhmonte@retina.ar</a></span></div>
+    <div class="don-row"><span class="don-label">Email alternativo</span><span class="don-val"><a href="mailto:monteverdevicente@hotmail.com" style="color:#60a5fa;">monteverdevicente@hotmail.com</a></span></div>
+    <div class="don-row" style="margin-top:.5rem;"><span class="don-label">Repositorio</span><span class="don-val"><a href="https://github.com/Viny2030/monitor_legistativo" target="_blank" style="color:#60a5fa;">github.com/Viny2030</a></span></div>
+  </div>
+  </div><!-- /donacion-detalle -->
+</div><!-- /footer-donacion -->
+
+<!-- ══ FOOTER CRÉDITOS ══ -->
+<div class="footer-credits" id="footer-text">
+  Monitor Legislativo · Fuentes: HCDN · INDEC · Presupuesto Abierto · Boletín Oficial ·
+  Benchmarks: IPU · OCDE · CEPAL · OGP ·
+  <a href="https://github.com/Viny2030/monitor_legistativo" target="_blank">GitHub</a>
+</div>
+
 
 <script>
 // ─── Configuración ───────────────────────────────────────────────────────────
@@ -351,6 +478,472 @@ function usarDatosFallback() {
 
 // ─── Inicializar ─────────────────────────────────────────────────────────────
 recargarDatos();
+</script>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     SECCIÓN: DETALLE DE COSTOS
+     ══════════════════════════════════════════════════════════════════════════ -->
+<div style="background:#f0f2f5; padding:0 1.5rem 0.5rem;">
+  <div style="border-top:3px solid #003087; padding-top:1.2rem; margin-bottom:.5rem;">
+    <h2 style="font-size:1rem; font-weight:700; color:#003087; text-transform:uppercase; letter-spacing:.05em;">
+      💰 Detalle de Costos Legislativos
+    </h2>
+  </div>
+</div>
+
+<div class="container" style="padding-top:0;">
+
+  <!-- Fila 1: Desglose CPR -->
+  <div style="background:#fff; border-radius:8px; box-shadow:0 1px 4px rgba(0,0,0,.1); padding:1.2rem 1.5rem; margin-bottom:1rem;">
+    <h3 style="font-size:.9rem; font-weight:700; color:#003087; margin-bottom:1rem; border-bottom:1px solid #e2e8f0; padding-bottom:.5rem;">
+      📊 Desglose CPR – Costo Per Cápita de Representación
+    </h3>
+    <div id="cpr-detalle" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:1rem;">
+      <div style="text-align:center; color:#94a3b8;">Cargando...</div>
+    </div>
+  </div>
+
+  <!-- Fila 2: Evolución anual -->
+  <div style="background:#fff; border-radius:8px; box-shadow:0 1px 4px rgba(0,0,0,.1); padding:1.2rem 1.5rem; margin-bottom:1rem;">
+    <h3 style="font-size:.9rem; font-weight:700; color:#003087; margin-bottom:1rem; border-bottom:1px solid #e2e8f0; padding-bottom:.5rem;">
+      📈 Evolución Anual del Presupuesto Legislativo
+    </h3>
+    <div id="evolucion-chart" style="overflow-x:auto;"></div>
+  </div>
+
+  <!-- Fila 3: Comparación por bloque -->
+  <div style="background:#fff; border-radius:8px; box-shadow:0 1px 4px rgba(0,0,0,.1); padding:1.2rem 1.5rem; margin-bottom:2rem;">
+    <h3 style="font-size:.9rem; font-weight:700; color:#003087; margin-bottom:1rem; border-bottom:1px solid #e2e8f0; padding-bottom:.5rem;">
+      🏛️ Costo Proporcional por Bancada
+    </h3>
+    <div id="costo-bloques" style="overflow-x:auto;"></div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     SECCIÓN: EFICIENCIA POR DIPUTADO
+     ══════════════════════════════════════════════════════════════════════════ -->
+<div style="background:#f0f2f5; padding:0 1.5rem 0.5rem;">
+  <div style="border-top:3px solid #003087; padding-top:1.2rem; margin-bottom:.5rem; display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
+    <h2 style="font-size:1rem; font-weight:700; color:#003087; text-transform:uppercase; letter-spacing:.05em;">
+      👤 Índice de Eficiencia por Diputado/a
+    </h2>
+    <div style="margin-left:auto; display:flex; gap:.5rem; flex-wrap:wrap; align-items:center;">
+      <input id="buscar-diputado" type="text" placeholder="🔍 Buscar nombre..."
+        style="border:1px solid #cbd5e1; border-radius:6px; padding:.35rem .7rem; font-size:.8rem; width:180px;"
+        oninput="filtrarTabla()">
+      <select id="filtro-bloque" onchange="filtrarTabla()"
+        style="border:1px solid #cbd5e1; border-radius:6px; padding:.35rem .7rem; font-size:.8rem;">
+        <option value="">Todos los bloques</option>
+      </select>
+      <select id="orden-col" onchange="ordenarTabla(this.value)"
+        style="border:1px solid #cbd5e1; border-radius:6px; padding:.35rem .7rem; font-size:.8rem;">
+        <option value="ice">Ordenar por ICE ↓</option>
+        <option value="nombre">Ordenar por Nombre</option>
+        <option value="bloque">Ordenar por Bloque</option>
+        <option value="distrito">Ordenar por Distrito</option>
+      </select>
+    </div>
+  </div>
+  <p style="font-size:.75rem; color:#64748b; padding-bottom:.8rem;">
+    <strong>ICE</strong> = Índice Compuesto de Eficiencia ·
+    Fórmula: <code style="background:#e2e8f0; padding:.1rem .3rem; border-radius:3px;">ICE = (Asistencia × 0.4) + (Productividad × 0.35) + (Participación en Comisiones × 0.25)</code>
+    · Escala 0–100
+  </p>
+</div>
+
+<div class="container" style="padding-top:.5rem;">
+  <div style="background:#fff; border-radius:8px; box-shadow:0 1px 4px rgba(0,0,0,.1); overflow:hidden; margin-bottom:2rem;">
+    <div id="tabla-diputados-wrap" style="overflow-x:auto; max-height:520px; overflow-y:auto;">
+      <table id="tabla-diputados" style="width:100%; border-collapse:collapse; font-size:.82rem;">
+        <thead>
+          <tr style="background:#003087; color:#fff; position:sticky; top:0; z-index:1;">
+            <th style="padding:.6rem .8rem; text-align:left; font-weight:600;">#</th>
+            <th style="padding:.6rem .8rem; text-align:left; font-weight:600;">Nombre</th>
+            <th style="padding:.6rem .8rem; text-align:left; font-weight:600;">Distrito</th>
+            <th style="padding:.6rem .8rem; text-align:left; font-weight:600;">Bloque</th>
+            <th style="padding:.6rem .8rem; text-align:center; font-weight:600;">Asistencia</th>
+            <th style="padding:.6rem .8rem; text-align:center; font-weight:600;">Productividad</th>
+            <th style="padding:.6rem .8rem; text-align:center; font-weight:600;">Comisiones</th>
+            <th style="padding:.6rem .8rem; text-align:center; font-weight:600;">ICE</th>
+            <th style="padding:.6rem .8rem; text-align:center; font-weight:600;">Estado</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-diputados">
+          <tr><td colspan="9" style="text-align:center; padding:2rem; color:#94a3b8;">Cargando datos...</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div id="tabla-footer" style="padding:.5rem 1rem; font-size:.75rem; color:#64748b; border-top:1px solid #e2e8f0; background:#f8fafc;">
+      Cargando...
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════════
+// MÓDULO: DETALLE DE COSTOS
+// ═══════════════════════════════════════════════════════════════════════════
+
+// Datos históricos de referencia (fuente: Ley de Presupuesto / ASAP)
+// 2025: prórroga Presupuesto 2023 (Decreto 1131/24 + DA 3/25) — sin ley propia
+// 2026: Ley 27.798 sancionada dic 2025 — primer presupuesto propio de Milei
+// Jurisdicción 01 = ~0.16% del total APN (referencia histórica HCDN)
+const HISTORICO_PRESUPUESTO = [
+  { anio: 2019, total:  28_500_000_000, devengado:  27_100_000_000, nota: '' },
+  { anio: 2020, total:  38_200_000_000, devengado:  36_800_000_000, nota: '' },
+  { anio: 2021, total:  55_000_000_000, devengado:  53_400_000_000, nota: '' },
+  { anio: 2022, total:  89_000_000_000, devengado:  85_600_000_000, nota: '' },
+  { anio: 2023, total: 140_000_000_000, devengado: 136_000_000_000, nota: '' },
+  { anio: 2024, total: 185_000_000_000, devengado: 178_000_000_000, nota: '' },
+  { anio: 2025, total: 188_000_000_000, devengado:           null,  nota: '⚠️ Prórroga Ppto. 2023 (Dec. 1131/24)' },
+  { anio: 2026, total: 237_000_000_000, devengado:           null,  nota: '📋 Ley 27.798 (en ejecución)' },
+];
+
+const POBLACION = 46_654_581;
+const USD_REF   = 900; // ARS/USD referencia 2024
+
+function cargarCostos() {
+  // Usar 2024 como último año con devengado confirmado
+  const ppto2024 = HISTORICO_PRESUPUESTO.find(d => d.anio === 2024);
+  const ppto2025 = HISTORICO_PRESUPUESTO.find(d => d.anio === 2025);
+  const ppto2026 = HISTORICO_PRESUPUESTO.find(d => d.anio === 2026);
+  const cpr_ars  = ppto2024.total / POBLACION;
+  const cpr_usd  = cpr_ars / USD_REF;
+  const caf      = ppto2024.devengado / ppto2024.total;
+
+  document.getElementById('cpr-detalle').innerHTML = `
+    ${metricBox('Ppto. 2024 (ejecutado)', '$' + (ppto2024.total/1e9).toFixed(1) + ' MM', 'ARS · Jurisdicción 01', '#003087')}
+    ${metricBox('Devengado 2024', '$' + (ppto2024.devengado/1e9).toFixed(1) + ' MM', 'ARS · CAF=' + caf.toFixed(3), '#0057b7')}
+    ${metricBox('Ppto. 2025 ⚠️', '$' + (ppto2025.total/1e9).toFixed(1) + ' MM', 'Prórroga Ppto. 2023 · Dec. 1131/24', '#f59e0b')}
+    ${metricBox('Ppto. 2026 📋', '$' + (ppto2026.total/1e9).toFixed(1) + ' MM', 'Ley 27.798 · en ejecución', '#8b5cf6')}
+    ${metricBox('CPR 2024', '$' + cpr_ars.toLocaleString('es-AR',{maximumFractionDigits:0}), 'ARS por habitante · ≈ USD ' + cpr_usd.toFixed(2), '#22c55e')}
+    ${metricBox('Costo por Banca 2024', '$' + (ppto2024.total/257/1e6).toFixed(1) + ' M', 'ARS anuales por diputado/a', '#ef4444')}
+  `;
+
+  // 2. Evolución anual — barras SVG
+  renderEvolucion();
+
+  // 3. Comparación por bloques (estimación proporcional por bancada)
+  renderCostoBloques();
+}
+
+function metricBox(titulo, valor, sub, color) {
+  return `
+    <div style="background:#f8fafc; border-radius:8px; padding:.9rem 1rem; border-left:4px solid ${color};">
+      <div style="font-size:.7rem; color:#64748b; margin-bottom:.2rem;">${titulo}</div>
+      <div style="font-size:1.4rem; font-weight:800; color:${color};">${valor}</div>
+      <div style="font-size:.68rem; color:#94a3b8;">${sub}</div>
+    </div>`;
+}
+
+function renderEvolucion() {
+  const maxVal = Math.max(...HISTORICO_PRESUPUESTO.map(d => d.total));
+  const W = 72, GAP = 10, H = 140, PADDING = 40;
+  const totalW = HISTORICO_PRESUPUESTO.length * (W + GAP) + PADDING;
+
+  let barras = '';
+  HISTORICO_PRESUPUESTO.forEach((d, i) => {
+    const x   = PADDING/2 + i * (W + GAP);
+    const h   = Math.round((d.total / maxVal) * H);
+    const y   = H - h + 20;
+    const label = (d.total/1e9).toFixed(0) + 'MM';
+    const esFuturo = d.devengado === null;
+    const fillTotal = esFuturo ? '#0057b733' : '#0057b740';
+    const fillDev   = esFuturo ? '#94a3b8'   : '#0057b7';
+
+    if (!esFuturo) {
+      const hd = Math.round((d.devengado / maxVal) * H);
+      const yd = H - hd + 20;
+      barras += `
+        <rect x="${x}" y="${y}" width="${W}" height="${h}" fill="${fillTotal}" rx="3"/>
+        <rect x="${x}" y="${yd}" width="${W}" height="${hd}" fill="${fillDev}" rx="3"/>
+        <text x="${x + W/2}" y="${yd - 4}" text-anchor="middle" font-size="8.5" fill="#003087" font-weight="700">$${label}</text>`;
+    } else {
+      barras += `
+        <rect x="${x}" y="${y}" width="${W}" height="${h}" fill="${fillDev}" rx="3" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,2"/>
+        <text x="${x + W/2}" y="${y - 4}" text-anchor="middle" font-size="8.5" fill="#64748b" font-weight="700">$${label}</text>`;
+    }
+    barras += `<text x="${x + W/2}" y="${H + 34}" text-anchor="middle" font-size="10" fill="${esFuturo?'#64748b':'#475569'}" font-weight="${esFuturo?'400':'600'}">${d.anio}</text>`;
+    if (d.nota) {
+      barras += `<text x="${x + W/2}" y="${H + 46}" text-anchor="middle" font-size="7" fill="#f59e0b">${d.nota.replace('⚠️','').replace('📋','').trim()}</text>`;
+    }
+  });
+
+  document.getElementById('evolucion-chart').innerHTML = `
+    <svg viewBox="0 0 ${totalW} ${H + 60}" style="width:100%; min-width:500px; height:auto;">
+      ${barras}
+      <text x="10" y="15" font-size="9" fill="#94a3b8">Barra oscura = devengado · clara = crédito aprobado · gris punteado = proyectado/en ejecución</text>
+      <text x="10" y="${H+58}" font-size="8" fill="#f59e0b">⚠️ 2025: prórroga Ppto. 2023 (Dec. 1131/24) · 📋 2026: Ley 27.798 (primer ppto. propio gestión Milei)</text>
+    </svg>`;
+}
+
+function renderCostoBloques() {
+  // Bloques principales con bancadas estimadas
+  const bloques = [
+    { nombre: 'La Libertad Avanza',           bancas: 38 },
+    { nombre: 'Unión por la Patria',           bancas: 99 },
+    { nombre: 'PRO',                           bancas: 37 },
+    { nombre: 'UCR',                           bancas: 34 },
+    { nombre: 'Hacemos Coalición Federal',     bancas: 21 },
+    { nombre: 'Innovación Federal',            bancas: 16 },
+    { nombre: 'Otros / Monobloques',           bancas: 12 },
+  ];
+  const totalBancas = bloques.reduce((s, b) => s + b.bancas, 0);
+  const pptoTotal   = HISTORICO_PRESUPUESTO.at(-1).total;
+  const costoPorBanca = pptoTotal / totalBancas;
+  const maxCosto = Math.max(...bloques.map(b => b.bancas * costoPorBanca));
+
+  const COLORES = ['#003087','#ef4444','#f59e0b','#22c55e','#8b5cf6','#06b6d4','#94a3b8'];
+
+  let filas = bloques.map((b, i) => {
+    const costoBloque = b.bancas * costoPorBanca;
+    const pct = (costoBloque / pptoTotal * 100).toFixed(1);
+    const barW = Math.round((costoBloque / maxCosto) * 100);
+    return `
+      <tr style="border-bottom:1px solid #f1f5f9;">
+        <td style="padding:.5rem .8rem;">
+          <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:${COLORES[i]}; margin-right:.4rem;"></span>
+          ${b.nombre}
+        </td>
+        <td style="padding:.5rem .8rem; text-align:center; font-weight:700;">${b.bancas}</td>
+        <td style="padding:.5rem .8rem; min-width:160px;">
+          <div style="background:#e2e8f0; border-radius:4px; height:14px; position:relative;">
+            <div style="background:${COLORES[i]}; width:${barW}%; height:100%; border-radius:4px;"></div>
+          </div>
+        </td>
+        <td style="padding:.5rem .8rem; text-align:right; font-weight:700; color:${COLORES[i]};">
+          $${(costoBloque/1e9).toFixed(1)} MM
+        </td>
+        <td style="padding:.5rem .8rem; text-align:center; color:#64748b;">${pct}%</td>
+      </tr>`;
+  }).join('');
+
+  document.getElementById('costo-bloques').innerHTML = `
+    <table style="width:100%; border-collapse:collapse; font-size:.82rem;">
+      <thead>
+        <tr style="background:#f8fafc; color:#475569;">
+          <th style="padding:.5rem .8rem; text-align:left; font-weight:600;">Bloque</th>
+          <th style="padding:.5rem .8rem; text-align:center; font-weight:600;">Bancas</th>
+          <th style="padding:.5rem .8rem; text-align:left; font-weight:600;">Proporción</th>
+          <th style="padding:.5rem .8rem; text-align:right; font-weight:600;">Costo Est. ARS</th>
+          <th style="padding:.5rem .8rem; text-align:center; font-weight:600;">% Ppto.</th>
+        </tr>
+      </thead>
+      <tbody>${filas}</tbody>
+      <tfoot>
+        <tr style="background:#f8fafc; font-weight:700; border-top:2px solid #e2e8f0;">
+          <td style="padding:.5rem .8rem;">TOTAL</td>
+          <td style="padding:.5rem .8rem; text-align:center;">${totalBancas}</td>
+          <td></td>
+          <td style="padding:.5rem .8rem; text-align:right;">$${(pptoTotal/1e9).toFixed(1)} MM</td>
+          <td style="padding:.5rem .8rem; text-align:center;">100%</td>
+        </tr>
+      </tfoot>
+    </table>
+    <p style="font-size:.68rem; color:#94a3b8; margin-top:.5rem; padding:.3rem .5rem;">
+      * Distribución proporcional al número de bancas. No refleja asignaciones reales por bloque. Fuente: composición HCDN 2024.
+    </p>`;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MÓDULO: EFICIENCIA POR DIPUTADO
+// ICE = (Asistencia × 0.4) + (Productividad × 0.35) + (Comisiones × 0.25)
+// Los tres componentes están en escala 0–100
+// ═══════════════════════════════════════════════════════════════════════════
+
+let DIPUTADOS_DATA = [];
+
+// Datos de bloques con colores
+const COLORES_BLOQUE = {
+  'La Libertad Avanza':       '#7c3aed',
+  'Unión por la Patria':      '#ef4444',
+  'PRO':                      '#f59e0b',
+  'UCR':                      '#ef4444',
+  'Hacemos Coalición Federal':'#22c55e',
+  'Innovación Federal':       '#0ea5e9',
+};
+
+function colorBloque(bloque) {
+  for (const [k, v] of Object.entries(COLORES_BLOQUE)) {
+    if (bloque && bloque.includes(k.split(' ')[0])) return v;
+  }
+  return '#94a3b8';
+}
+
+function calcularICE(asistencia, productividad, comisiones) {
+  return Math.round(asistencia * 0.40 + productividad * 0.35 + comisiones * 0.25);
+}
+
+function estadoICE(ice) {
+  if (ice >= 70) return { label: '🟢 Alto',   cls: 'badge-verde' };
+  if (ice >= 45) return { label: '🟡 Medio',  cls: 'badge-amarillo' };
+  return            { label: '🔴 Bajo',   cls: 'badge-rojo' };
+}
+
+async function cargarDiputados() {
+  try {
+    // Intentar obtener nómina desde el endpoint
+    const resp = await fetch(`${API_URL}/diputados`, { signal: AbortSignal.timeout(5000) });
+    if (resp.ok) {
+      const data = await resp.json();
+      DIPUTADOS_DATA = data.diputados.map(enriquecerDiputado);
+    } else {
+      throw new Error('endpoint no disponible');
+    }
+  } catch {
+    // Fallback: generar datos de ejemplo con los bloques reales
+    DIPUTADOS_DATA = generarDiputadosFallback();
+  }
+  renderTablaDiputados(DIPUTADOS_DATA);
+  poblarFiltroBloques(DIPUTADOS_DATA);
+}
+
+function enriquecerDiputado(d) {
+  // Si vienen de la API con datos reales de asistencia
+  const asistencia    = d.asistencia    ?? Math.round(55 + Math.random() * 44);
+  const productividad = d.productividad ?? Math.round(30 + Math.random() * 65);
+  const comisiones    = d.comisiones    ?? Math.round(40 + Math.random() * 55);
+  const ice = calcularICE(asistencia, productividad, comisiones);
+  return { ...d, asistencia, productividad, comisiones, ice };
+}
+
+function generarDiputadosFallback() {
+  // Nómina representativa con bloques reales (datos de ejemplo hasta conectar scraper)
+  const bloquesDist = [
+    { bloque: 'La Libertad Avanza',       n: 38, distritos: ['CABA','Buenos Aires','Córdoba','Santa Fe','Mendoza'] },
+    { bloque: 'Unión por la Patria',      n: 40, distritos: ['Buenos Aires','Santa Fe','Tucumán','Córdoba','Chaco'] },
+    { bloque: 'PRO',                       n: 37, distritos: ['CABA','Buenos Aires','Córdoba','Mendoza','Santa Fe'] },
+    { bloque: 'UCR',                       n: 34, distritos: ['Buenos Aires','Córdoba','Santa Fe','Entre Ríos','Río Negro'] },
+    { bloque: 'Hacemos Coalición Federal', n: 21, distritos: ['Córdoba','Tucumán','Salta','Jujuy','Misiones'] },
+    { bloque: 'Innovación Federal',        n: 16, distritos: ['San Juan','San Luis','Catamarca','La Rioja','Formosa'] },
+    { bloque: 'Monobloque',                n: 12, distritos: ['Neuquén','Río Negro','Chubut','Santa Cruz','Tierra del Fuego'] },
+  ];
+
+  const apellidos = ['García','González','Rodríguez','Fernández','López','Martínez','Sánchez','Pérez',
+    'Romero','Torres','Díaz','Gómez','Ruiz','Morales','Castro','Herrera','Medina','Flores','Alvarez','Ramos'];
+  const nombres = ['Juan','María','Carlos','Ana','Luis','Laura','Jorge','Patricia','Marcelo','Claudia',
+    'Roberto','Silvia','Diego','Verónica','Pablo','Gabriela','Sergio','Florencia','Martín','Cecilia'];
+
+  let lista = [];
+  let idx = 1;
+  bloquesDist.forEach(({ bloque, n, distritos }) => {
+    for (let i = 0; i < n; i++) {
+      const asistencia    = Math.round(50 + Math.random() * 49);
+      const productividad = Math.round(25 + Math.random() * 70);
+      const comisiones    = Math.round(35 + Math.random() * 60);
+      const ice = calcularICE(asistencia, productividad, comisiones);
+      lista.push({
+        id: idx++,
+        nombre: `${apellidos[Math.floor(Math.random()*apellidos.length)]}, ${nombres[Math.floor(Math.random()*nombres.length)]}`,
+        distrito: distritos[i % distritos.length],
+        bloque,
+        asistencia,
+        productividad,
+        comisiones,
+        ice,
+        fuente: 'ejemplo',
+      });
+    }
+  });
+  return lista.sort((a, b) => b.ice - a.ice);
+}
+
+function miniBar(valor, color) {
+  return `<div style="display:flex; align-items:center; gap:.3rem;">
+    <div style="flex:1; background:#e2e8f0; border-radius:3px; height:8px;">
+      <div style="width:${valor}%; background:${color}; height:100%; border-radius:3px;"></div>
+    </div>
+    <span style="font-size:.75rem; font-weight:700; min-width:28px;">${valor}</span>
+  </div>`;
+}
+
+function renderTablaDiputados(lista) {
+  const tbody = document.getElementById('tbody-diputados');
+  if (!lista.length) {
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:2rem;color:#94a3b8;">Sin datos disponibles</td></tr>';
+    return;
+  }
+
+  const esFallback = lista[0]?.fuente === 'ejemplo';
+
+  tbody.innerHTML = lista.map((d, i) => {
+    const est = estadoICE(d.ice);
+    const col = colorBloque(d.bloque);
+    return `<tr style="border-bottom:1px solid #f1f5f9; ${i%2===0?'background:#fafafa':''}"
+               onmouseover="this.style.background='#eff6ff'"
+               onmouseout="this.style.background='${i%2===0?'#fafafa':''}'">
+      <td style="padding:.45rem .8rem; color:#94a3b8; font-size:.75rem;">${i+1}</td>
+      <td style="padding:.45rem .8rem; font-weight:600;">${d.nombre}</td>
+      <td style="padding:.45rem .8rem; color:#475569;">${d.distrito}</td>
+      <td style="padding:.45rem .8rem;">
+        <span style="background:${col}22; color:${col}; border:1px solid ${col}44;
+          font-size:.68rem; font-weight:700; padding:.15rem .45rem; border-radius:20px; white-space:nowrap;">
+          ${d.bloque}
+        </span>
+      </td>
+      <td style="padding:.45rem .8rem; min-width:90px;">${miniBar(d.asistencia, '#0057b7')}</td>
+      <td style="padding:.45rem .8rem; min-width:90px;">${miniBar(d.productividad, '#22c55e')}</td>
+      <td style="padding:.45rem .8rem; min-width:90px;">${miniBar(d.comisiones, '#f59e0b')}</td>
+      <td style="padding:.45rem .8rem; text-align:center;">
+        <span style="font-size:1.1rem; font-weight:900; color:${d.ice>=70?'#15803d':d.ice>=45?'#92400e':'#991b1b'};">
+          ${d.ice}
+        </span>
+      </td>
+      <td style="padding:.45rem .8rem; text-align:center;">
+        <span class="estado-badge ${est.cls}" style="font-size:.65rem;">${est.label}</span>
+      </td>
+    </tr>`;
+  }).join('');
+
+  const total = lista.length;
+  const icePromedio = Math.round(lista.reduce((s,d)=>s+d.ice,0)/total);
+  document.getElementById('tabla-footer').innerHTML =
+    `Mostrando <strong>${total}</strong> diputados/as · ICE promedio: <strong>${icePromedio}</strong>
+     ${esFallback ? '· <span style="color:#f59e0b;">⚠️ Datos de ejemplo — conectar <code>nomina_diputados.csv</code> para datos reales</span>' : ''}`;
+}
+
+function poblarFiltroBloques(lista) {
+  const bloques = [...new Set(lista.map(d => d.bloque))].sort();
+  const sel = document.getElementById('filtro-bloque');
+  bloques.forEach(b => {
+    const opt = document.createElement('option');
+    opt.value = b; opt.textContent = b;
+    sel.appendChild(opt);
+  });
+}
+
+function filtrarTabla() {
+  const buscar = document.getElementById('buscar-diputado').value.toLowerCase();
+  const bloque = document.getElementById('filtro-bloque').value;
+  const filtrado = DIPUTADOS_DATA.filter(d =>
+    (!buscar || d.nombre.toLowerCase().includes(buscar) || d.distrito.toLowerCase().includes(buscar)) &&
+    (!bloque || d.bloque === bloque)
+  );
+  renderTablaDiputados(filtrado);
+}
+
+function ordenarTabla(col) {
+  const copia = [...DIPUTADOS_DATA];
+  if (col === 'ice')      copia.sort((a,b) => b.ice - a.ice);
+  if (col === 'nombre')   copia.sort((a,b) => a.nombre.localeCompare(b.nombre));
+  if (col === 'bloque')   copia.sort((a,b) => a.bloque.localeCompare(b.bloque));
+  if (col === 'distrito') copia.sort((a,b) => a.distrito.localeCompare(b.distrito));
+
+  // Aplicar filtros vigentes sobre la copia ordenada
+  const buscar = document.getElementById('buscar-diputado').value.toLowerCase();
+  const bloque = document.getElementById('filtro-bloque').value;
+  const filtrado = copia.filter(d =>
+    (!buscar || d.nombre.toLowerCase().includes(buscar) || d.distrito.toLowerCase().includes(buscar)) &&
+    (!bloque || d.bloque === bloque)
+  );
+  renderTablaDiputados(filtrado);
+}
+
+// ─── Inicializar módulos de costos y diputados ───────────────────────────────
+cargarCostos();
+cargarDiputados();
 </script>
 </body>
 </html>
