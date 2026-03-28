@@ -83,6 +83,44 @@ footer a { color: #0A2463; text-decoration: none; font-weight: 600; }
 .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
 @media(max-width:900px){ .grid-3 { grid-template-columns: 1fr 1fr; } }
 @media(max-width:600px){ .grid-3 { grid-template-columns: 1fr; } }
+
+/* ── Nómina ── */
+.nomina-controles { display:flex; gap:.6rem; flex-wrap:wrap; margin-bottom:.9rem; align-items:center; }
+.nomina-controles input { flex:1; min-width:180px; padding:.45rem .8rem; border:1px solid #dde2ec; border-radius:6px; font-size:.82rem; outline:none; }
+.nomina-controles input:focus { border-color:#0A2463; }
+.nomina-controles select { padding:.45rem .7rem; border:1px solid #dde2ec; border-radius:6px; font-size:.82rem; background:#fff; outline:none; }
+.nomina-count { font-size:.78rem; color:#64748b; margin-left:auto; white-space:nowrap; }
+
+/* ── Autor ── */
+.autor-card { background:#fff; border-radius:12px; border:1px solid #dde2ec; padding:1.4rem 1.6rem; display:flex; gap:1.5rem; align-items:flex-start; flex-wrap:wrap; }
+.autor-foto { width:90px; height:90px; border-radius:50%; background:linear-gradient(135deg,#0A2463,#1a3a7c); display:flex; align-items:center; justify-content:center; font-size:2.4rem; flex-shrink:0; color:#fff; border:3px solid #C9A84C; overflow:hidden; }
+.autor-foto img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+.autor-info { flex:1; min-width:200px; }
+.autor-info h3 { font-size:1rem; font-weight:800; color:#0A2463; margin-bottom:.2rem; }
+.autor-info .titulo { font-size:.82rem; color:#475569; font-style:italic; margin-bottom:.5rem; }
+.autor-info .bio { font-size:.8rem; color:#334155; line-height:1.6; margin-bottom:.7rem; }
+.autor-mails { display:flex; flex-wrap:wrap; gap:.5rem; }
+.autor-mail { display:inline-flex; align-items:center; gap:.35rem; background:#f0f4ff; border:1px solid #c5d0e8; border-radius:6px; padding:.3rem .75rem; font-size:.78rem; color:#0A2463; font-weight:600; text-decoration:none; }
+.autor-mail:hover { background:#0A2463; color:#fff; }
+
+/* ── Donación ── */
+.donacion-card { background:linear-gradient(135deg,#fff8e8,#fff); border-radius:12px; border:1px solid #f0d080; border-left:4px solid #C9A84C; padding:1.4rem 1.6rem; }
+.donacion-card h3 { font-size:1rem; font-weight:800; color:#92400e; margin-bottom:.5rem; }
+.donacion-card p { font-size:.82rem; color:#78350f; line-height:1.6; margin-bottom:.9rem; }
+.don-tab { padding:.4rem 1rem; border-radius:6px; border:1px solid #f0d080; background:#fff; color:#92400e; font-size:.8rem; font-weight:700; cursor:pointer; }
+.don-tab-activo { background:#C9A84C; color:#fff; border-color:#C9A84C; }
+.don-panel { }
+.don-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+@media(max-width:680px){ .don-grid { grid-template-columns:1fr; } }
+.don-cuenta { background:#fff; border-radius:8px; border:1px solid #e2e8f0; padding:1rem 1.1rem; }
+.don-cuenta-titulo { font-size:.82rem; font-weight:800; color:#0A2463; margin-bottom:.6rem; }
+.don-tbl { width:100%; border-collapse:collapse; font-size:.78rem; margin-bottom:.7rem; }
+.don-tbl td { padding:.3rem .4rem; border-bottom:1px solid #f0f0f0; color:#334155; }
+.don-tbl td:first-child { color:#64748b; white-space:nowrap; width:38%; }
+.don-mono { font-family:monospace; font-size:.82rem; letter-spacing:.03em; color:#0A2463; }
+.don-copy { background:#0A2463; color:#fff; border:none; border-radius:6px; padding:.35rem .9rem; font-size:.76rem; font-weight:700; cursor:pointer; }
+.don-copy:hover { background:#1a3a7c; }
+.don-copy.copiado { background:#15803d; }
 </style>
 </head>
 <body>
@@ -96,6 +134,7 @@ footer a { color: #0A2463; text-decoration: none; font-weight: 600; }
   <nav>
     <a href="indicadores_diputados.html">🏛️ Nómina</a>
     <a href="indicadores2_diputados.html" class="active">📊 Indicadores</a>
+    <a href="nomina_detalle_diputados.html">👥 Detalle</a>
     <a href="metodologia_diputados.html">📚 Metodología</a>
   </nav>
 </header>
@@ -109,6 +148,8 @@ footer a { color: #0A2463; text-decoration: none; font-weight: 600; }
   <a href="#dim3">📈 III · Desempeño</a>
   <a href="#dim4">🔍 IV · Transparencia</a>
   <a href="#formulas">📐 Fórmulas</a>
+  <a href="#nomina">👥 Nómina</a>
+  <a href="#autor">👤 Autor</a>
   <a href="metodologia_diputados.html">📚 Metodología</a>
 </div>
 
@@ -190,13 +231,40 @@ footer a { color: #0A2463; text-decoration: none; font-weight: 600; }
       <div class="dim-sub">¿Cuánto cuesta y qué recursos emplea la Cámara? · Ref.: <em>Parliaments that Work</em>, Cap. 1 · <em>Benchmarking and Self-Assessment for Parliaments</em>, Cap. 1 y 3</div>
     </div>
   </div>
-  <div class="ind-card-sm">
-    <div class="badge-num">1</div>
+  <div class="ind-card-sm" style="border-left:3px solid #16a34a">
+    <div class="badge-num" style="color:#16a34a">1</div>
     <div class="ind-body">
-      <div class="ind-title">Costo de Representación por Ciudadano <span class="tag-pendiente">pendiente datos</span></div>
-      <div class="ind-def">Gasto total del Poder Legislativo prorrateado por habitante. Mide el costo directo de la democracia representativa para cada ciudadano.</div>
-      <div class="ind-formula">CRC = Presupuesto_Total / Población_Total</div>
-      <div class="ind-ref">📚 <em>Parliaments that Work</em> (Manual), Cap. 1: "The Ecology of Governance"</div>
+      <div class="ind-title">Costo de Representación por Ciudadano <span class="tag-disponible">✓ activo v1.0</span></div>
+      <div class="ind-def">Gasto total de la HCDN prorrateado por habitante. Mide el costo directo de la democracia representativa para cada ciudadano argentino.</div>
+
+      <!-- Resultado destacado -->
+      <div style="display:flex;gap:1rem;flex-wrap:wrap;margin:.6rem 0">
+        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:.6rem 1rem;min-width:160px">
+          <div style="font-size:.7rem;color:#15803d;font-weight:700;text-transform:uppercase;letter-spacing:.04em">CRC 2025</div>
+          <div style="font-size:1.5rem;font-weight:900;color:#15803d;line-height:1.1">$4.818</div>
+          <div style="font-size:.68rem;color:#166534">por habitante / año</div>
+        </div>
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:.6rem 1rem;min-width:160px">
+          <div style="font-size:.7rem;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:.04em">Por diputado</div>
+          <div style="font-size:1.5rem;font-weight:900;color:#0A2463;line-height:1.1">$881,7 M</div>
+          <div style="font-size:.68rem;color:#64748b">presupuesto / 257 bancas</div>
+        </div>
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:.6rem 1rem;min-width:160px">
+          <div style="font-size:.7rem;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:.04em">Presupuesto HCDN</div>
+          <div style="font-size:1.1rem;font-weight:900;color:#0A2463;line-height:1.2">$226.469 MM</div>
+          <div style="font-size:.68rem;color:#64748b">pesos · ejercicio 2025</div>
+        </div>
+      </div>
+
+      <div class="ind-formula">CRC = $226.469.155.049 / 47.000.000 hab. = <strong>$4.818 / habitante</strong></div>
+
+      <!-- Fuentes -->
+      <div style="margin-top:.5rem;font-size:.72rem;color:#64748b;line-height:1.6">
+        📄 <strong>Fuente presupuesto:</strong> Trámite Parlamentario N°136/2025 — HCDN (Sesiones Extraordinarias 2025) ·
+        <strong>Población:</strong> INDEC Proyección 2025 (~47.000.000 hab.) ·
+        <strong>Nota:</strong> incluye gastos corrientes + capital de la Cámara de Diputados (jurisdicción propia, excl. Senado).
+      </div>
+      <div class="ind-ref" style="margin-top:.4rem">📚 <em>Parliaments that Work</em> (Manual), Cap. 1: "The Ecology of Governance"</div>
     </div>
   </div>
   <div class="ind-card-sm">
@@ -417,6 +485,151 @@ footer a { color: #0A2463; text-decoration: none; font-weight: 600; }
       <span class="var">IRG</span> <span class="op">=</span> (<span class="var">bancas_distrito</span> <span class="op">/</span> <span class="var">total_bancas</span>) <span class="op">/</span> (<span class="var">población_distrito</span> <span class="op">/</span> <span class="var">población_total</span>)<br>
       <span class="comm">-- IRG > 1: sobre-representado | IRG &lt; 1: sub-representado</span>
     </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     NÓMINA COMPLETA DE DIPUTADOS
+════════════════════════════════════════════════════════════════ -->
+<div class="seccion" id="nomina">
+  <h2>👥 Nómina completa — 257 Diputados en ejercicio</h2>
+  <div class="panel">
+    <div class="nomina-controles">
+      <input type="text" id="nomina-buscar" placeholder="🔍  Buscar por nombre, bloque o distrito…" oninput="filtrarNomina()">
+      <select id="nomina-bloque" onchange="filtrarNomina()">
+        <option value="">Todos los bloques</option>
+      </select>
+      <select id="nomina-distrito" onchange="filtrarNomina()">
+        <option value="">Todos los distritos</option>
+      </select>
+      <select id="nomina-mandato" onchange="filtrarNomina()">
+        <option value="">Todos los mandatos</option>
+        <option value="2025-2029">Mandato 2025-2029</option>
+        <option value="2023-2027">Mandato 2023-2027</option>
+      </select>
+      <span class="nomina-count" id="nomina-count">257 diputados</span>
+    </div>
+    <div class="panel-scroll" style="max-height:520px">
+      <table class="tbl" id="tbl-nomina">
+        <thead><tr>
+          <th style="min-width:28px">#</th>
+          <th>Apellido y Nombre</th>
+          <th>Distrito</th>
+          <th>Bloque</th>
+          <th class="num">Mandato</th>
+        </tr></thead>
+        <tbody id="tbody-nomina"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SOBRE EL AUTOR
+════════════════════════════════════════════════════════════════ -->
+<div class="seccion" id="autor">
+  <h2>👤 Sobre el Autor</h2>
+  <div class="autor-card">
+    <div class="autor-foto">
+      <img src="../foto.jpg" alt="Vicente H. Monteverde"
+           onerror="this.style.display='none';this.parentElement.textContent='👤'">
+    </div>
+    <div class="autor-info">
+      <h3>Ph.D. Vicente Humberto Monteverde</h3>
+      <div class="titulo">Doctor en Ciencias Económicas · Investigador en economía política y fenómenos de corrupción</div>
+      <div class="bio">
+        Autor de la teoría de <strong>Transferencia Regresiva de Ingresos</strong> y desarrollador del algoritmo XAI aplicado al análisis de contrataciones públicas.
+        Publicaciones en <em>Journal of Financial Crime</em> (Emerald Publishing).
+        Asesor en transparencia y auditoría algorítmica del gasto público.
+      </div>
+      <div class="autor-mails">
+        <a class="autor-mail" href="mailto:vhmonte@retina.ar">✉️ vhmonte@retina.ar</a>
+        <a class="autor-mail" href="mailto:viny01958@gmail.com">✉️ viny01958@gmail.com</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     DONACIÓN
+════════════════════════════════════════════════════════════════ -->
+<div class="seccion" id="donacion">
+  <h2>🤝 Apoyá este proyecto</h2>
+  <div class="donacion-card">
+    <!-- Cabecera clicable -->
+    <div id="don-toggle" onclick="toggleDonacion()"
+         style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none">
+      <h3 style="margin:0">💛 ¿Te resultó útil este monitor? — <span style="font-size:.82rem;font-weight:400;color:#a16207">hacé clic para ver cómo apoyar</span></h3>
+      <span id="don-arrow" style="font-size:1.1rem;color:#C9A84C;transition:transform .25s">▼</span>
+    </div>
+
+    <!-- Contenido colapsado por defecto -->
+    <div id="don-body" style="display:none;margin-top:.9rem">
+    <p>
+      Este proyecto es independiente, sin publicidad ni financiamiento institucional.
+      Si valorás la transparencia legislativa y querés que sigamos desarrollando nuevos indicadores,
+      podés hacer una contribución voluntaria. Cada aporte ayuda a sostener el tiempo de investigación,
+      el mantenimiento de los datos y el desarrollo de la versión 1.1.
+    </p>
+
+    <!-- Tabs -->
+    <div style="display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap">
+      <button class="don-tab don-tab-activo" onclick="donTab(this,'desde-ar')">🇦🇷 Desde Argentina</button>
+      <button class="don-tab" onclick="donTab(this,'desde-ext')">🌎 Desde el Exterior</button>
+    </div>
+
+    <!-- DESDE ARGENTINA -->
+    <div id="desde-ar" class="don-panel">
+      <div class="don-grid">
+
+        <div class="don-cuenta">
+          <div class="don-cuenta-titulo">🟦 Pesos (ARS)</div>
+          <table class="don-tbl">
+            <tr><td>Tipo</td><td><strong>Caja de Ahorro</strong></td></tr>
+            <tr><td>CBU</td><td><strong class="don-mono">0140005203400552652310</strong></td></tr>
+            <tr><td>Alias</td><td><strong class="don-mono">ALGORIT.MONTE.PESOS</strong></td></tr>
+            <tr><td>Titular</td><td>Vicente Humberto Monteverde</td></tr>
+            <tr><td>CUIT</td><td>20-12034411-1</td></tr>
+          </table>
+          <button class="don-copy" onclick="copiar('0140005203400552652310', this)">📋 Copiar CBU</button>
+        </div>
+
+        <div class="don-cuenta">
+          <div class="don-cuenta-titulo">💵 Dólares (USD)</div>
+          <table class="don-tbl">
+            <tr><td>Tipo</td><td><strong>Caja de Ahorro USD</strong></td></tr>
+            <tr><td>CBU</td><td><strong class="don-mono">0140005204400550329709</strong></td></tr>
+            <tr><td>Alias</td><td><strong class="don-mono">ALGO.MONTE.DOLARES</strong></td></tr>
+            <tr><td>Titular</td><td>Vicente Humberto Monteverde</td></tr>
+            <tr><td>CUIT</td><td>20-12034411-1</td></tr>
+          </table>
+          <button class="don-copy" onclick="copiar('0140005204400550329709', this)">📋 Copiar CBU</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- DESDE EL EXTERIOR -->
+    <div id="desde-ext" class="don-panel" style="display:none">
+      <div class="don-cuenta" style="max-width:520px">
+        <div class="don-cuenta-titulo">🌎 Transferencia Internacional (USD)</div>
+        <table class="don-tbl">
+          <tr><td>Banco</td><td><strong>Banco Santander Montevideo</strong></td></tr>
+          <tr><td>Beneficiario</td><td>Vicente Humberto Monteverde</td></tr>
+          <tr><td>Dirección</td><td>Av. Directorio 3024 PB Dto. 04</td></tr>
+          <tr><td>CUIT</td><td>20-12034411-1</td></tr>
+          <tr><td>Tipo de cuenta</td><td><strong>Caja de Ahorro USD</strong></td></tr>
+          <tr><td>Número</td><td><strong class="don-mono">005200183500</strong></td></tr>
+          <tr><td>SWIFT / BIC</td><td><strong class="don-mono">BSCHUYMM</strong></td></tr>
+        </table>
+        <button class="don-copy" onclick="copiar('BSCHUYMM', this)">📋 Copiar SWIFT</button>
+      </div>
+    </div>
+
+    <div style="margin-top:.9rem;font-size:.75rem;color:#92400e;opacity:.8">
+      📧 Consultas: <a href="mailto:vhmonte@retina.ar" style="color:#92400e;font-weight:700">vhmonte@retina.ar</a>
+    </div>
+    </div><!-- /don-body -->
   </div>
 </div>
 
@@ -789,10 +1002,89 @@ function rHtml(b, n, rank) {
   </div>`;
 }
 
-const top = bloquesSorted.slice(0,10);
-const bottom = [...bloquesSorted].reverse().slice(0,10);
-document.getElementById('list-mayor').innerHTML = top.map(([b,n],i) => rHtml(b,n,i+1)).join('');
-document.getElementById('list-menor').innerHTML = bottom.map(([b,n],i) => rHtml(b,n,i+1)).join('');
+const topBloques = bloquesSorted.slice(0,10);
+const bottomBloques = [...bloquesSorted].reverse().slice(0,10);
+document.getElementById('list-mayor').innerHTML = topBloques.map(([b,n],i) => rHtml(b,n,i+1)).join('');
+document.getElementById('list-menor').innerHTML = bottomBloques.map(([b,n],i) => rHtml(b,n,i+1)).join('');
+
+// ── NÓMINA COMPLETA ──────────────────────────────────────────
+// Poblar selects de filtro
+const bloquesUnicos = [...new Set(DIPUTADOS.map(d=>d.bloque))].sort();
+const distritosUnicos = [...new Set(DIPUTADOS.map(d=>d.distrito))].sort();
+
+const selBloque = document.getElementById('nomina-bloque');
+bloquesUnicos.forEach(b => {
+  const o = document.createElement('option'); o.value = b; o.textContent = b;
+  selBloque.appendChild(o);
+});
+const selDistrito = document.getElementById('nomina-distrito');
+distritosUnicos.forEach(d => {
+  const o = document.createElement('option'); o.value = d; o.textContent = d;
+  selDistrito.appendChild(o);
+});
+
+function renderNomina(lista) {
+  const tbody = document.getElementById('tbody-nomina');
+  tbody.innerHTML = lista.map((d, i) => {
+    const col = colorBloque(d.bloque);
+    const badge = `<span class="pill" style="background:${col};font-size:.68rem">${d.bloque}</span>`;
+    const mandBadge = d.mandato === '2025-2029'
+      ? `<span style="color:#15803d;font-weight:700">${d.mandato}</span>`
+      : `<span style="color:#475569">${d.mandato}</span>`;
+    return `<tr>
+      <td style="color:#94a3b8;font-size:.75rem">${i+1}</td>
+      <td style="font-weight:600">${d.nombre}</td>
+      <td style="font-size:.78rem;color:#334155">${d.distrito}</td>
+      <td>${badge}</td>
+      <td class="num">${mandBadge}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('nomina-count').textContent =
+    lista.length === DIPUTADOS.length
+      ? `${lista.length} diputados`
+      : `${lista.length} de ${DIPUTADOS.length}`;
+}
+
+function filtrarNomina() {
+  const texto  = document.getElementById('nomina-buscar').value.toLowerCase();
+  const bloque = document.getElementById('nomina-bloque').value;
+  const distr  = document.getElementById('nomina-distrito').value;
+  const mand   = document.getElementById('nomina-mandato').value;
+  const filtered = DIPUTADOS.filter(d =>
+    (!texto  || d.nombre.toLowerCase().includes(texto) || d.bloque.toLowerCase().includes(texto) || d.distrito.toLowerCase().includes(texto)) &&
+    (!bloque || d.bloque   === bloque) &&
+    (!distr  || d.distrito === distr)  &&
+    (!mand   || d.mandato  === mand)
+  );
+  renderNomina(filtered);
+}
+
+// Render inicial ordenado alfabéticamente
+const nominaOrdenada = [...DIPUTADOS].sort((a,b)=>a.nombre.localeCompare(b.nombre,'es'));
+renderNomina(nominaOrdenada);
+
+function toggleDonacion() {
+  const body  = document.getElementById('don-body');
+  const arrow = document.getElementById('don-arrow');
+  const abierto = body.style.display !== 'none';
+  body.style.display  = abierto ? 'none' : 'block';
+  arrow.style.transform = abierto ? '' : 'rotate(180deg)';
+}
+
+// ── DONACIÓN: tabs y copiar ──────────────────────────────────
+function donTab(btn, panelId) {
+  document.querySelectorAll('.don-tab').forEach(b => b.classList.remove('don-tab-activo'));
+  document.querySelectorAll('.don-panel').forEach(p => p.style.display = 'none');
+  btn.classList.add('don-tab-activo');
+  document.getElementById(panelId).style.display = 'block';
+}
+function copiar(texto, btn) {
+  navigator.clipboard.writeText(texto).then(() => {
+    btn.textContent = '✅ Copiado';
+    btn.classList.add('copiado');
+    setTimeout(() => { btn.textContent = '📋 Copiar ' + (texto.length > 10 ? 'CBU' : 'SWIFT'); btn.classList.remove('copiado'); }, 2000);
+  });
+}
 </script>
 </body>
 </html>
