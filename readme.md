@@ -65,9 +65,15 @@ monitor_legistativo/
 │   ├── nomina_detalle_diputados.html
 │   ├── metodologia_diputados.html
 │   └── manual_usuario.html
+├── tests/
+│   ├── test_obtener_datos.py   # Tests para el pipeline de datos
+│   └── test_scraper_hcdn.py    # Tests para el scraper HCDN
 ├── scraper_diputados.py        # Scraper nómina HCDN
 ├── obtener_datos.py            # Pipeline de datos
+├── scraper_hcdn.py             # Scraper votaciones y comisiones
 ├── nomina_diputados.csv        # Nómina en CSV
+├── conftest.py                 # Configuración pytest
+├── pytest.ini                  # Configuración pytest
 ├── foto.jpg                    # Foto del autor
 ├── requirements.txt
 └── README.md
@@ -91,6 +97,26 @@ python scraper_diputados.py
 # Abrir el dashboard (sin servidor necesario)
 # Abrir dashboard/indicadores_diputados.html en el navegador
 ```
+
+---
+
+## 🧪 Tests
+
+El proyecto incluye una suite de tests automatizados que cubre los módulos principales sin hacer llamadas reales a internet.
+
+```bash
+# Correr todos los tests
+python -m pytest -v
+```
+
+| Archivo | Módulo testeado | Tests | Estado |
+|---------|----------------|-------|--------|
+| `tests/test_obtener_datos.py` | `obtener_datos.py` | 17 | ✅ |
+| `tests/test_scraper_hcdn.py` | `scraper_hcdn.py` | 21 | ✅ |
+
+**Total: 38 tests · 100% passing**
+
+Los tests usan mocks para simular respuestas HTTP — son reproducibles en cualquier entorno y no requieren conexión a internet.
 
 ---
 
