@@ -108,7 +108,7 @@ def get_diputados():
     import pandas as pd
     from pathlib import Path
 
-    csv_path = Path(__file__).parent.parent / "data" / "nomina_diputados.csv"
+    csv_path = Path(__file__).parent.parent / "nomina_diputados.csv"
 
     if not csv_path.exists():
         return JSONResponse(content={"ok": False, "diputados": [], "fuente": "csv_no_encontrado"})

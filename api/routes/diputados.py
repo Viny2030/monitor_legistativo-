@@ -9,7 +9,7 @@ import os
 
 router = APIRouter()
 
-CSV_PATH = os.path.join(os.path.dirname(__file__), "../..", "..", "nomina_diputados.csv")
+CSV_PATH = os.path.join(os.getcwd(), "nomina_diputados.csv")
 
 
 def _load_df() -> pd.DataFrame:
