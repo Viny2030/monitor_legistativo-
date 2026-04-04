@@ -16,6 +16,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Python 3.12
         uses: actions/setup-python@v5
@@ -38,6 +40,6 @@ jobs:
           if git diff --staged --quiet; then
             echo "Sin cambios en los datos."
           else
-            git commit -m "auto: pipeline $(date +'%Y-%m-%d') — datos actualizados"
-            git push
+            git pull --rebase origin main
+            git push origin main
           fi
