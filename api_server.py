@@ -5,50 +5,48 @@ API REST minima para monitor_legistativo.
 Sirve los datos generados por scraper_pipeline.py como endpoints JSON.
 Pensado para deploy en Railway; el HTML del dashboard consume estos endpoints
 en lugar de tener los datos hardcodeados.
-
 Endpoints:
   GET /                        → health check + meta
+  GET /dashboard               → dashboard principal (index.html)
   GET /api/diputados           → array completo de diputados
   GET /api/diputados/{nombre}  → diputado especifico
   GET /api/bloques             → resumen agregado por bloque
   GET /api/presupuesto         → datos de ejecucion presupuestaria
   GET /api/kpis                → KPIs globales del dashboard
   POST /api/refresh            → dispara el pipeline (protegido por REFRESH_TOKEN)
-
 Uso local:
     pip install fastapi uvicorn
     python api_server.py
     # abre http://localhost:8000/docs
-
+ 
 Variables de entorno:
     REFRESH_TOKEN   → token para el endpoint /api/refresh (default: "dev")
     PORT            → puerto (default: 8000)
     DATA_FILE       → ruta al JSON generado (default: data/diputados.json)
 """
-
 import json
 import os
 import subprocess
 import sys
 from collections import defaultdict
 from datetime import datetime
-
 from fastapi import FastAPI, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
-
+from fastapi.staticfiles import StaticFiles  # <-- AGREGADO
+ 
 # ---------------------------------------------------------------------------
 # Config
 # ---------------------------------------------------------------------------
 DATA_FILE = os.getenv("DATA_FILE", "data/diputados.json")
 REFRESH_TOKEN = os.getenv("REFRESH_TOKEN", "dev")
 PORT = int(os.getenv("PORT", 8000))
-
+ 
 app = FastAPI(
     title="Monitor Legislativo Diputados — API",
     description="Datos actualizados automaticamente del monitoreo legislativo de la HCDN",
     version="1.0.0"
 )
-
+ 
 # CORS abierto para que el HTML pueda consumir desde cualquier origen
 app.add_middleware(
     CORSMiddleware,
@@ -56,7 +54,10 @@ app.add_middleware(
     allow_methods=["GET", "POST"],
     allow_headers=["*"]
 )
-
+ 
+# Servir archivos HTML del dashboard  <-- AGREGADO
+app.mount("/dashboard", StaticFiles(directory="dashboard", html=True), name="dashboard")
+ 
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -68,8 +69,7 @@ def load_data():
         )
     with open(DATA_FILE, "r", encoding="utf-8") as f:
         return json.load(f)
-
-
+ 
 def _bloque_stats(diputados):
     """Agrega estadisticas por bloque."""
     bloques = defaultdict(lambda: {
@@ -83,6 +83,7 @@ def _bloque_stats(diputados):
         "iqp_count": 0,
         "distritos": set()
     })
+ 
     for d in diputados:
         b = d.get("bloque", "Sin bloque") or "Sin bloque"
         bloques[b]["cantidad"] += 1
@@ -98,7 +99,7 @@ def _bloque_stats(diputados):
             bloques[b]["iqp_count"] += 1
         if d.get("distrito"):
             bloques[b]["distritos"].add(d["distrito"])
-
+ 
     result = []
     for nombre, s in sorted(bloques.items(), key=lambda x: -x[1]["cantidad"]):
         n = s["cantidad"]
@@ -121,8 +122,7 @@ def _bloque_stats(diputados):
             "distritos": sorted(s["distritos"])
         })
     return result
-
-
+ 
 # ---------------------------------------------------------------------------
 # Endpoints
 # ---------------------------------------------------------------------------
@@ -139,8 +139,7 @@ def health():
         "ultima_actualizacion": meta.get("ultima_actualizacion"),
         "timestamp": datetime.now().isoformat()
     }
-
-
+ 
 @app.get("/api/diputados")
 def get_diputados(bloque: str = None, distrito: str = None, genero: str = None):
     """
@@ -149,54 +148,55 @@ def get_diputados(bloque: str = None, distrito: str = None, genero: str = None):
     """
     data = load_data()
     diputados = data.get("diputados", [])
-
+ 
     if bloque:
         diputados = [d for d in diputados if (d.get("bloque") or "").lower() == bloque.lower()]
     if distrito:
         diputados = [d for d in diputados if (d.get("distrito") or "").lower() == distrito.lower()]
     if genero:
         diputados = [d for d in diputados if (d.get("genero") or "").upper() == genero.upper()]
-
+ 
     return {
         "total": len(diputados),
         "diputados": diputados,
         "meta": data.get("meta", {})
     }
-
-
+ 
 @app.get("/api/diputados/{nombre_busqueda}")
 def get_diputado(nombre_busqueda: str):
     """Busca un diputado por apellido (busqueda parcial, case-insensitive)."""
     data = load_data()
     q = nombre_busqueda.upper()
     resultados = [d for d in data.get("diputados", []) if q in d.get("nombre", "").upper()]
+ 
     if not resultados:
         raise HTTPException(status_code=404, detail=f"No se encontro diputado: {nombre_busqueda}")
+ 
     return {"resultados": resultados}
-
-
+ 
 @app.get("/api/bloques")
 def get_bloques():
     """Estadisticas agregadas por bloque parlamentario."""
     data = load_data()
     bloques = _bloque_stats(data.get("diputados", []))
+ 
     return {
         "total_bloques": len(bloques),
         "bloques": bloques,
         "meta": data.get("meta", {})
     }
-
-
+ 
 @app.get("/api/presupuesto")
 def get_presupuesto():
     """Datos de ejecucion presupuestaria del Poder Legislativo."""
     data = load_data()
     presupuesto = data.get("presupuesto", {})
+ 
     if not presupuesto:
         raise HTTPException(status_code=404, detail="Datos de presupuesto no disponibles todavia")
+ 
     return presupuesto
-
-
+ 
 @app.get("/api/kpis")
 def get_kpis():
     """
@@ -211,36 +211,37 @@ def get_kpis():
     data = load_data()
     diputados = data.get("diputados", [])
     n = len(diputados)
+ 
     if n == 0:
         raise HTTPException(status_code=503, detail="Sin datos de diputados")
-
+ 
     # NAPE
     asistencias = [d["asistencia_pct"] for d in diputados if d.get("asistencia_pct") is not None]
     nape = round(1 - sum(asistencias) / len(asistencias) / 100, 4) if asistencias else None
-
+ 
     # TPMP (proyectos presentados promedio)
     proyectos = [d["proyectos_presentados"] for d in diputados if d.get("proyectos_presentados") is not None]
     tpmp = round(sum(proyectos) / len(proyectos), 2) if proyectos else None
-
+ 
     # COLS (% con al menos 1 proyecto aprobado)
     con_aprobado = sum(1 for d in diputados if (d.get("proyectos_aprobados") or 0) > 0)
     cols = round(con_aprobado / n * 100, 1) if n else None
-
+ 
     # IAP
     presupuesto = data.get("presupuesto", {})
     iap = presupuesto.get("iap")
-
+ 
     # Paridad
     mujeres = sum(1 for d in diputados if d.get("genero") == "F")
     pct_mujeres = round(mujeres / n * 100, 1)
-
+ 
     # IQP promedio
     iqps = [d["iqp"] for d in diputados if d.get("iqp") is not None]
     iqp_global = round(sum(iqps) / len(iqps), 4) if iqps else None
-
+ 
     # RLS: Argentina ~46.6M hab, 257 diputados activos
     rls = round(n / 46.6, 2)
-
+ 
     return {
         "total_diputados": n,
         "nape": nape,
@@ -256,8 +257,7 @@ def get_kpis():
         },
         "meta": data.get("meta", {})
     }
-
-
+ 
 @app.post("/api/refresh")
 def refresh_data(x_refresh_token: str = Header(None)):
     """
@@ -266,6 +266,7 @@ def refresh_data(x_refresh_token: str = Header(None)):
     """
     if x_refresh_token != REFRESH_TOKEN:
         raise HTTPException(status_code=401, detail="Token invalido")
+ 
     try:
         result = subprocess.run(
             [sys.executable, "scraper_pipeline.py"],
@@ -281,8 +282,7 @@ def refresh_data(x_refresh_token: str = Header(None)):
         raise HTTPException(status_code=504, detail="Pipeline timeout (>5min)")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-
+ 
 # ---------------------------------------------------------------------------
 # Run
 # ---------------------------------------------------------------------------
