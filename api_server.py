@@ -32,7 +32,8 @@ from collections import defaultdict
 from datetime import datetime
 from fastapi import FastAPI, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles  # <-- AGREGADO
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import RedirectResponse
  
 # ---------------------------------------------------------------------------
 # Config
@@ -127,6 +128,10 @@ def _bloque_stats(diputados):
 # Endpoints
 # ---------------------------------------------------------------------------
 @app.get("/")
+def root():
+    return RedirectResponse(url="/dashboard/")
+
+@app.get("/health")
 def health():
     try:
         data = load_data()
