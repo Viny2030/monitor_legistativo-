@@ -16,6 +16,8 @@ RUN pip install --no-cache-dir -r requirements.txt -r requirements_api.txt
 # Instalar aiofiles explicitamente (requerido por FastAPI StaticFiles)
 RUN pip install aiofiles>=23.2.1
 
+# Cache bust — fuerza rebuild al cambiar este valor
+ARG CACHE_BUST=20260419b
 # Copiar codigo
 COPY . .
 
