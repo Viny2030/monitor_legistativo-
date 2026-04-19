@@ -414,7 +414,7 @@ def refresh_data(x_refresh_token: str = Header(None)):
     try:
         result = subprocess.run(
             [sys.executable, "scraper_pipeline.py"],
-            capture_output=True, text=True, timeout=300
+            capture_output=True, text=True, timeout=660
         )
         return {
             "status": "ok" if result.returncode == 0 else "error",
@@ -423,7 +423,7 @@ def refresh_data(x_refresh_token: str = Header(None)):
             "timestamp": datetime.now().isoformat()
         }
     except subprocess.TimeoutExpired:
-        raise HTTPException(status_code=504, detail="Pipeline timeout (>5min)")
+        raise HTTPException(status_code=504, detail="Pipeline timeout (>11min)")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
